@@ -7,7 +7,7 @@
 // I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
 //===========================
 #define _CRT_SECURE_NO_WARNINGS
-#include<cstring>
+#include<string>
 #include<iostream>
 #include<iomanip>
 
@@ -36,7 +36,7 @@ namespace sdds {
 			cout << setw(25) << left << setfill(' ') << m_desc << "|";
 			cout.setf(ios::fixed);
 			cout.precision(2);
-
+			
 			m_price = m_price+(m_price* g_taxrate);
 			cout << setw(12)<< left << setfill(' ') << m_price << "|";
 			if (m_isSpecial == true)
@@ -58,17 +58,17 @@ namespace sdds {
 		char desc[127]{ '\0' };
 		double price{ 0.00 };
 		char special{ '\0' };
-
-
+		
+		 
 		if (is)
-		{
+		{ 
 			is.get(name, 10, ',');
-			is.ignore();
+			is.ignore(); 
 			is.get(desc, 127, ',');
 			is.ignore();
 			is >> price;
 			is.ignore();
-			is >> special;
+			is >> special; 
 			
 			    m_price = price;
 				strcpy(m_name, name);
