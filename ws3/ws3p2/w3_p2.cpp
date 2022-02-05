@@ -58,19 +58,18 @@ int main(int argc, char** argv)
 		std::cout << "******************************************************\n";
 		std::cout << "* Testing the Set of Integers                        *\n";
 		std::cout << "******************************************************\n";
-		sdds::Collection<long, 100>* setIntegers = new sdds::Set<long>();
+		sdds::Set<long> setIntegers;
 
 		for (const auto& item : iData)
-			setIntegers->add(item);
+			setIntegers.add(item);
 
-		std::cout << "Set size: [" << setIntegers->size() << "]\n";
-		setIntegers->display();
+		std::cout << "Set size: [" << setIntegers.size() << "]\n";
+		setIntegers.display();
 
-		std::cout << "Item [0]: " << (*setIntegers)[0] << "\n";
-		std::cout << "Item [5]: " << (*setIntegers)[5] << "\n";
-		std::cout << "Item [9]: " << (*setIntegers)[9] << "\n";
+		std::cout << "Item [0]: " << setIntegers[0] << "\n";
+		std::cout << "Item [5]: " << setIntegers[5] << "\n";
+		std::cout << "Item [9]: " << setIntegers[9] << "\n";
 		std::cout << "******************************************************\n\n";
-		delete setIntegers;
 	}
 
 	{
@@ -95,19 +94,18 @@ int main(int argc, char** argv)
 		std::cout << "******************************************************\n";
 		std::cout << "* Testing the Set of Floats                          *\n";
 		std::cout << "******************************************************\n";
-		sdds::Collection<double, 100>* setFloats = new sdds::Set<double>;
+		sdds::Set<double> setFloats;
 
 		for (const auto& item : dData)
-			setFloats->add(item);
+			setFloats.add(item);
 
-		std::cout << "Set size: [" << setFloats->size() << "]\n";
-		setFloats->display();
+		std::cout << "Set size: [" << setFloats.size() << "]\n";
+		setFloats.display();
 
-		std::cout << "Item [0]: " << (*setFloats)[0] << "\n";
-		std::cout << "Item [5]: " << (*setFloats)[5] << "\n";
-		std::cout << "Item [9]: " << (*setFloats)[9] << "\n";
+		std::cout << "Item [0]: " << setFloats[0] << "\n";
+		std::cout << "Item [5]: " << setFloats[5] << "\n";
+		std::cout << "Item [9]: " << setFloats[9] << "\n";
 		std::cout << "******************************************************\n\n";
-		delete setFloats;
 	}
 
 	{
@@ -135,22 +133,21 @@ int main(int argc, char** argv)
 		std::cout << "******************************************************\n";
 		std::cout << "* Testing the Set of Pairs                           *\n";
 		std::cout << "******************************************************\n";
-		sdds::Collection<sdds::Pair, 100>* setDictionary = new sdds::Set<sdds::Pair>();
+		sdds::Set<sdds::Pair> setDictionary;
 
 		for (const auto& item : pData)
-			setDictionary->add(item);
+			setDictionary.add(item);
 
-		std::cout << "Set size: [" << setDictionary->size() << "]\n";
-		setDictionary->display();
+		std::cout << "Set size: [" << setDictionary.size() << "]\n";
+		setDictionary.display();
 
-		std::cout << "Item [1]: [" << (*setDictionary)[1].getKey() << "]["
-			<< (*setDictionary)[1].getValue() << "]\n";
-		std::cout << "Item [4]: [" << (*setDictionary)[4].getKey() << "]["
-			<< (*setDictionary)[4].getValue() << "]\n";
-		std::cout << "Item [11]: [" << (*setDictionary)[11].getKey() << "]["
-			<< (*setDictionary)[11].getValue() << "]\n";
+		std::cout << "Item [1]: [" << setDictionary[1].getKey() << "]["
+			<< setDictionary[1].getValue() << "]\n";
+		std::cout << "Item [4]: [" << setDictionary[4].getKey() << "]["
+			<< setDictionary[4].getValue() << "]\n";
+		std::cout << "Item [11]: [" << setDictionary[11].getKey() << "]["
+			<< setDictionary[11].getValue() << "]\n";
 		std::cout << "******************************************************\n\n";
-		delete setDictionary;
 	}
 
 	return cout;

@@ -78,7 +78,7 @@ namespace sdds {
 
 			for (size_t i = 0; i < Collection<double, 100>::size(); i++)
 			{
-				if (fabs(item)-fabs( Collection<double, 100>::arr[i])<=fabs(0.01))
+				if (fabs(Collection<double, 100>::arr[i]- fabs(item))<=(0.01))
 				{
 					ok = false;
 
