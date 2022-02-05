@@ -9,7 +9,8 @@
 #ifndef SDDS_SET_H_
 #define SDDS_SET_H_
 #include"Collection.h"
-
+#include <cmath>
+#include <cstdlib>
 namespace sdds {
 
 	template<typename T>
