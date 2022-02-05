@@ -14,11 +14,12 @@ namespace sdds{
 	template<typename T,size_t capacity>
 	class Collection 
 	{   	
+		static T dummy;
 		static size_t noOfelement;
-
-	public:
-	
+		
+	public:	
 		T arr[capacity]{};
+
 		Collection() {}
 		size_t size() {
 			return noOfelement;
@@ -53,23 +54,27 @@ namespace sdds{
 
 	template<typename T, size_t capacity>
 	T Collection<T, capacity>::operator[](unsigned index) {
-		T obj;
+		
 		if (index<capacity||index>0)
 		{
-			obj = arr[index];
+		    dummy = arr[index];
 		}
-		return obj;
+		return dummy;
+
 	}
 
 	template<typename T, size_t capacity>
 	size_t Collection<T,capacity>::noOfelement = 0;
-	
+
+	template<typename T, size_t capacity>
+	T Collection<T, capacity>::dummy{};
+
 
 	template<>
-	class Collection<Pair, 100> :public Pair
+	class Collection<Pair, 100> 
 	{
 		static size_t noOfelement;
-
+		static Pair dummy;
 	public:
 
 		Pair arr[100];
@@ -121,16 +126,17 @@ namespace sdds{
 
 
 	Pair Collection<Pair, 100>::operator[](unsigned index) {
-		Pair obj;
+		
 		if (index < 100 || index>0)
 		{
-			obj = arr[index];
+			dummy = arr[index];
 		}
-		return obj;
+		return dummy;
 	}
 
 
 	size_t Collection<Pair,100>::noOfelement = 0;	
+	Pair Collection<Pair, 100>::dummy{};
 }
 
 

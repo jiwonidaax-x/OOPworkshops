@@ -13,7 +13,7 @@ using namespace std;
 namespace sdds {
 	void Pair::display(std::ostream& os)const
 	{
-		os <<setw(21)<<right<<m_key<< ":" <<setw(54)<<left<<m_value;
+		os <<setw(21)<<right<<m_key<< ":" <<left<<m_value;
 	}
 
 	std::ostream& operator<<(std::ostream& os, const Pair& pair)
