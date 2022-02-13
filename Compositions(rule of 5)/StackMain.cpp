@@ -9,18 +9,18 @@ int main() {
    Stack<string> s;
    d.push(1.2).push(2.3).push(3.5).push(4.6);
    a = d;//copy assignment test
-   s.push("Green").push("Blue").push("Black");
-   cout << d.depth() << " doubles in the Stack \"d\"" << endl;
-   cout << s.depth() << " strings in the Stack \"s\"" << endl;
+   //s.push("Green").push("Blue").push("Black");
+   //cout << d.depth() << " doubles in the Stack \"d\"" << endl;
+   //cout << s.depth() << " strings in the Stack \"s\"" << endl;
    while (d) {
       cout << d.pop() << endl;
    }
+   cout << "copy assignment test" << endl;
    while (a) {
-       cout << "copy assignment test" << endl;
        cout << a.pop() << endl;//test
    }
-   while (s) {
+ /*  while (s) {
       cout << s.pop() << endl;
-   }
+   }*/
    return 0;
 }

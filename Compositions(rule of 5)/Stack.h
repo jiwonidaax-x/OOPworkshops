@@ -11,6 +11,7 @@ namespace sdds {
    class Node {
       Node<T>* m_next = nullptr;
       T m_data;
+      Node() {}
       Node(T data, Node<T>* next) {
          m_next = next;
          m_data = data;
@@ -29,11 +30,20 @@ namespace sdds {
          return *this;
       }
       Stack<T>(){}
-      Stack<T>(const Stack<T>& stack)//copy constructor
+      Stack<T>( Stack<T>& stack)//copy constructor
       {
-          operator=(stack);
+          
       }
-      Stack<T>& operator=(const Stack<T>& stack)
+      Stack<T>& operator=( Stack<T>& stack)
+      {
+
+      }
+      Stack<T>(Stack<T>& stack)//move constructor
+      {
+          operator=(move(stack);
+      }
+      //move assignment
+      Stack<T>& operator=(Stack<T>&& stack)
       {
           if (this != &stack)
           {
@@ -43,15 +53,15 @@ namespace sdds {
                   m_top = nullptr;
               }
               m_depth = stack.m_depth;
-             
-              for (size_t i = 0; i < m_depth; i++)
-              {
-                 
-              }
+
+              m_top = stack.m_top;
+              stack.m_depth = 0;
+              stack.m_top = nullptr;
 
           }
           return *this;
       }
+
       T pop() {
          T val;
          val = m_top->m_data;
