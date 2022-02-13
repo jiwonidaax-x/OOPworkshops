@@ -32,7 +32,7 @@ namespace sdds {
       Stack<T>(){}
       Stack<T>( Stack<T>& stack)//copy constructor
       {
-          
+          operator=(stack);
       }
       Stack<T>& operator=( Stack<T>& stack)
       {
