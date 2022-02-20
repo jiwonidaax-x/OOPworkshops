@@ -17,32 +17,28 @@ namespace sdds {
 	}
 
 	void Processor::run()
-	{	
-		if (m_host)
-		{
-			if (get_current_job()->is_complete())
+	{
+
+
+			try
 			{
-				m_current = nullptr;				
+				get_current_job()->operator()(m_power);
 			}
-			else
+			catch (std::underflow_error& e)
 			{
-				try
-				{
-					(*m_current)(m_power);
-				}
-				catch (std::underflow_error& e)
-				{
-					m_host->log << "Processed over quota for " << *m_current << endl;
-				}
+				m_host->log << "Processed over quota for " << *m_current;
+				delete m_current;
+				m_current = nullptr;
 			}
-		}
 		
+
+
 	}
 
-	 Processor::operator bool() const
+	Processor::operator bool() const
 	{
 		return m_current ? true : false;
-		 
+
 	}
 
 	Processor& Processor::operator+=(Job*& job)
@@ -51,12 +47,16 @@ namespace sdds {
 		{
 			m_current = job;
 		}
+		else
+		{
+			throw runtime_error("dd");
+		}
 		return *this;
 	}
 
 	Job* Processor::get_current_job() const
 	{
-		return m_current;		
+		return m_current;
 	}
 
-} 
+}

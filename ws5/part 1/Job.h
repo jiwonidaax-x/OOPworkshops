@@ -21,7 +21,7 @@ namespace sdds {
 
 	public:
 		//default constructor
-		Job() {}
+		Job();
 
 		Job(const std::string& title);
 

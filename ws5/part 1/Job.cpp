@@ -21,8 +21,11 @@ namespace sdds {
 		m_title = title;
 		m_unit = (title.length() % 10) + 1;
 		m_remain = m_unit;
+		isActive = false;
 	}
-
+	Job::Job() {
+		isActive = false;
+	}
 	bool Job::is_active()
 	{
 		return isActive ? true : false;
@@ -40,22 +43,24 @@ namespace sdds {
 	}
 	Job& Job::operator()(size_t unit)
 	{
+		
+
 		isActive = true;
 
 		if (m_remain == 0)
 		{
 			isActive = false;
 		}
-		if (unit>m_remain)
+		if (unit > m_remain)
 		{
 			m_remain = 0;
 			throw std::underflow_error("dd");
-			
+
 		}
 		else
 		{
 			m_remain -= unit;
-		
+
 
 		}
 		return *this;

@@ -79,13 +79,12 @@ namespace sdds {
 				do
 				{
 					m_size++;
-					std::getline(in, temp,'\n');				
-					
-					
-				} while (in);
-		
-				m_size = 5;
-		
+					std::getline(in, temp,'\n');		
+
+				} while (!in.eof());
+			
+
+
 				m_items = new T * [m_size];
 
 				in.clear();
@@ -179,7 +178,7 @@ namespace sdds {
 		size_t get_available_units()
 		{
 			size_t j = 0u;
-			for (size_t i = 0; i < m_size; i++)
+			for (size_t i = 0; i < 5; i++)
 			{
 				if (!*m_items[i])
 				{

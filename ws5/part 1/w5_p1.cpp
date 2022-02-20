@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
     *cpu += "Divide 2 integers";
     std::cout << std::endl;
     
-    for (auto i = 0;i< cpu->has_jobs(); i++) {
+    for (auto i = 0; cpu->has_jobs(); i++) {
         std::cout << "CPU run # " << i + 2 << std::endl;
         cpu->run();
         std::cout << "CPU now has " << cpu->get_available_units() << " available units and has " << (cpu->has_jobs() ? "some pending" : "no") << " jobs after run #" << i + 2 << "." << std::endl;
