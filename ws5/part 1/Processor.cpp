@@ -19,20 +19,28 @@ namespace sdds {
 	void Processor::run()
 	{
 
+		try
+		{
 
-			try
+			if (m_current->is_complete())
 			{
-				get_current_job()->operator()(m_power);
-			}
-			catch (std::underflow_error& e)
-			{
-				m_host->log << "Processed over quota for " << *m_current;
 				delete m_current;
 				m_current = nullptr;
 			}
-		
+			else
+			{
+				(*m_current)(m_power);
+			}
 
+		}
+		catch (std::underflow_error& e)
+		{
 
+			m_host->log << "Processed over quota for " << *m_current;
+
+			delete m_current;
+			m_current = nullptr;
+		}
 	}
 
 	Processor::operator bool() const

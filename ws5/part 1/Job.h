@@ -32,7 +32,7 @@ namespace sdds {
 		std::string name();
 
 		//functor using object like function object
-		Job& operator()(size_t unit);
+		void operator()(size_t unit);
 
 		std::ostream& display(std::ostream& os)const;
 

@@ -33,7 +33,7 @@ namespace sdds {
 
 	bool Job::is_complete()
 	{
-		
+
 		return m_remain == 0 ? true : false;
 	}
 
@@ -41,30 +41,38 @@ namespace sdds {
 	{
 		return m_title;
 	}
-	Job& Job::operator()(size_t unit)
+
+
+	void Job::operator()(size_t unit)
 	{
-		
-
-		isActive = true;
-
-		if (m_remain == 0)
-		{
-			isActive = false;
-		}
+	
 		if (unit > m_remain)
 		{
+			isActive = false;	
 			m_remain = 0;
-			throw std::underflow_error("dd");
+			throw std::underflow_error("");
 
 		}
+	
 		else
 		{
 			m_remain -= unit;
 
+			if (m_remain == 0)
+			{
+				isActive = false;
+			}
+			if (m_remain != 0)
+			{
+				isActive = true;
+			}
+            
 
 		}
-		return *this;
+		
 	}
+
+
 	std::ostream& Job::display(std::ostream& os)const
 	{
 		os << "`" << m_title << "` " << "[" << setw(2) << right << setfill('0') << m_remain << "/" << setw(2) << right << setfill('0') << m_unit << " remaining]" << endl;
