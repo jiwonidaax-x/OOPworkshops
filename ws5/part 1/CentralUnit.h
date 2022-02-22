@@ -4,6 +4,7 @@
 #include"Job.h"
 #include <iostream>
 #include <fstream>
+#include<iomanip>
 #include<utility>
 #include <exception>
 #include<string>
@@ -23,11 +24,79 @@ namespace sdds {
 
 	public:
 		std::ostream& log = std::cout;
+		void display()
+		{
+
+			log << "Central TYPE Unit list" << std::endl;
+			for (size_t i = 0; i < m_size; i++)
+			{
+				log << "[" << std::setw(4) << std::right << std::setfill('0') << i+1 << "]";
+				log << *m_items[i]<<std::endl;
+			}
+		}
+
+		CentralUnit<T>& operator+=( T* item)
+		{
+			try
+			{
+				if (m_size == 0u) {
+					m_items = new T *[++m_size];
+					m_items[0] = item;
+				}
+				else {
+					T** temp = new T*[m_size];
+
+					for (auto i = 0u; i < m_size; ++i) {
+						temp[i] = m_items[i];
+					}
+					delete[] m_items;
+					m_items = nullptr;
+
+					m_items= new T *[++m_size];
+
+					for (auto i = 0u; i < m_size - 1u; ++i)
+					{
+						m_items[i] = temp[i];
+					}
+
+					m_items[m_size - 1u] = item;
+
+					delete[] temp;
+					temp = nullptr;
+				
+				}
+				
+			}
+			catch (const std::exception&)
+			{
+				std::cout << "error!" << std::endl;
+			}
+			return *this;
+		}
+		T* operator[](const std::string& title) 
+		{
+			bool find{ false };
+			size_t idx{ 0u };
+
+			for (auto i = 0u; i < 4 && !m_count; ++i) {
+				if (m_jobs[i]->name() == title)
+				{
+					idx = i;
+					find = true;
+				}
+			}
+			if (!find) {
+				throw std::out_of_range("Job is not being handled by a unit");
+			}
+
+			return m_items[idx];
+		}
 
 		CentralUnit(const CentralUnit& src) {
 			throw 0;
 		}
 		CentralUnit& operator=(const CentralUnit&) = delete;
+
 		CentralUnit(CentralUnit&& src)
 		{
 			operator=(move(src));
@@ -59,7 +128,20 @@ namespace sdds {
 
 		}//move assignment
 
+		void complete_job(CentralUnit<T>& unit, T* src)
+		{
+	
+			for (size_t i = 0; i < m_size; i++)
+			{
+				if (m_items[i] == unit)
+				{
+					m_items[i]->free();
+					log << "[COMPLETE] " << src->get_current_job() << " " << m_items[i];
+				}
+			}
 
+
+		}
 		CentralUnit(const char* name, const char* init)
 		{
 			m_type = name;
@@ -70,7 +152,6 @@ namespace sdds {
 			if (in.is_open() == false) {
 
 				throw std::invalid_argument("File cannot open.");
-
 			}
 			else
 			{
@@ -83,7 +164,6 @@ namespace sdds {
 
 				} while (!in.eof());
 			
-
 
 				m_items = new T * [m_size];
 
@@ -127,6 +207,10 @@ namespace sdds {
 
 					m_items[i] = new T(this, brand, code, capacity);
 					i++;
+					
+
+					//여기자리임 콜백
+
 
 				}
 				in.close();
@@ -149,13 +233,15 @@ namespace sdds {
 						m_count--;
 					}
 				}
+				
 
 			}		
 			for (size_t i = 0; i < m_size; i++)
 			{
 				if (*m_items[i])
 				{
-					m_items[i]->run();
+
+					(*m_items[i])();
 				}
 				
 			}
@@ -178,7 +264,7 @@ namespace sdds {
 		size_t get_available_units()
 		{
 			size_t j = 0u;
-			for (size_t i = 0; i < 5; i++)
+			for (size_t i = 0; i < m_size; i++)
 			{
 				if (!*m_items[i])
 				{
@@ -212,6 +298,8 @@ namespace sdds {
 		}
 
 	};
+
+
 
 }
 #endif // !SDDS_CENTRALUNIT_H_

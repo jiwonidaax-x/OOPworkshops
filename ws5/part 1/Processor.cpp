@@ -15,13 +15,62 @@ namespace sdds {
 		m_code = code;
 		m_power = power;
 	}
+	void Processor::operator()()
+	{
+		if (get_current_job()->is_complete() == false)
+		{
+
+			try
+			{
+				(*m_current)(m_power);
+				m_address;
+			}
+			catch (std::underflow_error& e)
+			{
+				f_error;
+				free();
+			}
+
+		}
+
+	}
+	void Processor::on_complete(void (*address) (const CentralUnit<Processor>&, const Processor&))
+	{
+		m_address = address;
+	}
+
+	void Processor::on_error(std::function<void(Processor& src)> error)
+	{
+		f_error = error;
+	}
+
+	Job* Processor::free()
+	{
+	
+		m_current = nullptr;
+		return m_current;
+	}
+
+	std::ostream& operator<<(std::ostream& os, const Processor& src)
+	{
+		os << "(" << src.m_power << ") " << src.m_brand << " " << src.m_code;
+		if (src.m_current)
+		{
+			if (src.m_current->is_complete()==false)
+			{
+				os << " processing ";
+				src.m_current->display(os);
+			}
+	
+		}
+		return os;
+	}
+
 
 	void Processor::run()
 	{
-
 		try
 		{
-
 			if (m_current->is_complete())
 			{
 				delete m_current;
@@ -68,3 +117,4 @@ namespace sdds {
 	}
 
 }
+

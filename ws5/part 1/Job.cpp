@@ -75,7 +75,7 @@ namespace sdds {
 
 	std::ostream& Job::display(std::ostream& os)const
 	{
-		os << "`" << m_title << "` " << "[" << setw(2) << right << setfill('0') << m_remain << "/" << setw(2) << right << setfill('0') << m_unit << " remaining]" << endl;
+		os << "`" << m_title << "` " << "[" << setw(2) << right << setfill('0') << m_remain << "/" << setw(2) << right << setfill('0') << m_unit << " remaining]";
 		return os;
 	}
 
