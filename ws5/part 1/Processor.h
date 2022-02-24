@@ -1,3 +1,11 @@
+//===========================
+//name:Jiwon Choi
+//email:jchoi152@myseneca.ca
+//student Id:154292197
+//section:NBB
+//Date:20220225
+// I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+//===========================
 #ifndef SDDS_PROCESSOR_H_
 #define SDDS_PROCESSOR_H_
 #include<iostream>

@@ -1,3 +1,11 @@
+//===========================
+//name:Jiwon Choi
+//email:jchoi152@myseneca.ca
+//student Id:154292197
+//section:NBB
+//Date:20220225
+// I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+//===========================
 #pragma once
 #ifndef SDDS_CENTRALUNIT_H_
 #define SDDS_CENTRALUNIT_H_
@@ -73,16 +81,22 @@ namespace sdds {
 			}
 			return *this;
 		}
+	
+		
 		T* operator[](const std::string& title) 
 		{
 			bool find{ false };
 			size_t idx{ 0u };
 
-			for (auto i = 0u; i < 4 && !m_count; ++i) {
-				if (m_jobs[i]->name() == title)
+			for (auto i = 0u; i < m_size; ++i) {
+				if (m_items[i]->get_current_job()!=nullptr)
 				{
-					idx = i;
-					find = true;
+					if (m_items[i]->get_current_job()->name()==title)
+					{
+						idx = i;
+						find = true;
+					}
+	
 				}
 			}
 			if (!find) {
@@ -142,6 +156,7 @@ namespace sdds {
 
 
 		}
+
 		CentralUnit(const char* name, const char* init)
 		{
 			m_type = name;
@@ -256,8 +271,10 @@ namespace sdds {
 				if (*m_items[i])
 				{
 					ok = true;
+					
 				}
 			}
+		
 			return ok || m_count > 0;
 		}
 

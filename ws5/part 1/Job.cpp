@@ -33,7 +33,6 @@ namespace sdds {
 
 	bool Job::is_complete()
 	{
-
 		return m_remain == 0 ? true : false;
 	}
 
