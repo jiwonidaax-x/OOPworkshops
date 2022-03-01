@@ -45,10 +45,14 @@
 
 		/////////////////////////////
 
-	
+		
 		void on_error(std::function<void(Processor*)> error);
 		Job* free();
 		friend std::ostream& operator<<(std::ostream&, const Processor&);
+
+		~Processor() {
+			delete m_current;
+		}
 	};
 
 

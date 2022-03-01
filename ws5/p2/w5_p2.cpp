@@ -13,6 +13,12 @@
 #include "Job.h"
 #include "Processor.h"
 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+
+
 void printLine() {
     std::cout << std::setfill('-') << std::setw(45) << "-" << std::setfill(' ') << "\n";
 }
@@ -26,6 +32,10 @@ void printHeader(std::string label) {
 }
 
 int main(int argc, char** argv) {
+   
+   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+   _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_DEBUG);
+
     std::cout << "Command Line:\n";
     printLine();
     for (int i = 0; i < argc; i++)
@@ -139,4 +149,5 @@ int main(int argc, char** argv) {
     printLine();
 
     delete cpu;
+    _CrtDumpMemoryLeaks();
 }

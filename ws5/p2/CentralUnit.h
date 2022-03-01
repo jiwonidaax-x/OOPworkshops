@@ -26,7 +26,7 @@ namespace sdds {
 
 		//array pointer to individual units of type T
 		T** m_items{ nullptr };
-		Job* m_jobs[4];
+		Job* m_jobs[4]{ nullptr };
 		size_t m_size = 0u; //unit
 		size_t m_count = 0u;//job
 
@@ -43,7 +43,7 @@ namespace sdds {
 
 			if (in.is_open() == false) {
 
-				throw std::invalid_argument("File cannot open.");
+				throw std::invalid_argument("File cannot be opened.");
 			}
 			else
 			{
@@ -56,7 +56,8 @@ namespace sdds {
 
 				} while (!in.eof());
 
-
+				
+				delete[] m_items;
 				m_items = new T * [m_size];
 
 				in.clear();
@@ -96,30 +97,23 @@ namespace sdds {
 					}
 
 					temp.erase(0, index + 1);
+				
+					
 
 					m_items[i] = new T(this, brand, code, capacity);
 
 
-					/*void (*m_cmpptr) (CentralUnit<Processor>&, Processor*)=complete_job;
-				
-					m_items[i]->on_complete(*m_cmpptr(*this, m_items[i]));*/
 					
-					 //1)void (*m_complete) (CentralUnit<T>&, T*) = complete_job(*this,m_items[i]);
-
-				    //2) m_items[i]->on_complete(this.complete_job(m_items[i],));
-					
-					 //m_items[i]->on_complete(complete_job);
-			     
 					 m_items[i]->on_complete(complete_job);
 					
 				
-               //
+               
 					 auto lambda = [&](T* src)
 					 {
-
-							 log << "Failed to complete job" << src->get_current_job()->name();
-							 log<<this->get_available_units() << " units available";
-
+						
+							 log << "Failed to complete job " << src->get_current_job()->name()<<std::endl;
+							 log<< m_size << " units available."<<std::endl;
+							 delete src->free();
 						 
 					 };
 
@@ -140,14 +134,11 @@ namespace sdds {
 			for (size_t i = 0; i < unit.m_size; i++) {
 				if (unit.m_items[i] == src) {
 
-					log << "[COMPLETE] " << *(src->get_current_job()) << " " << *src
+					log << "[COMPLETE] " << *(src->get_current_job()) << " using " << *src
 						<< std::endl;
-			
-					src->free();
-					// delete unit[i];
-					// unit[i] = nullptr;
-
-					log<<unit.get_available_units() << " units available";
+					delete src->free();
+					 
+					log<<unit.get_available_units() << " units available."<<std::endl;
 				}
 			}
 		};
@@ -156,42 +147,46 @@ namespace sdds {
 		void display()
 		{
 
-			log << "Central TYPE Unit list" << std::endl;
+			log << "Central Processing Unit list" << std::endl;
 			for (size_t i = 0; i < m_size; i++)
 			{
-				log << "[" << std::setw(4) << std::right << std::setfill('0') << i+1 << "]";
+				log << "[" << std::setw(4) << std::right << std::setfill('0') << i+1 << "] ";
 				log << *m_items[i]<<std::endl;
 			}
 		}
 
+		
 		CentralUnit<T>& operator+=( T* item)
 		{
 			try
 			{
 				if (m_size == 0u) {
-					m_items = new T *[++m_size];
+
+					delete[] m_items;
+					m_items = new T * [++m_size];
 					m_items[0] = item;
 				}
 				else {
-					T** temp = new T*[m_size];
+					T** temp = new T * [m_size+1];
 
 					for (auto i = 0u; i < m_size; ++i) {
 						temp[i] = m_items[i];
 					}
-					delete[] m_items;
+
+					delete[]m_items;
 					m_items = nullptr;
 
-					m_items= new T *[++m_size];
+					m_items = new T * [++m_size];
 
-					for (auto i = 0u; i < m_size - 1u; ++i)
+					for (size_t i = 0; i < m_size-1u; ++i)
 					{
 						m_items[i] = temp[i];
 					}
-
 					m_items[m_size - 1u] = item;
-
+					
 					delete[] temp;
 					temp = nullptr;
+
 				
 				}
 				
@@ -221,7 +216,7 @@ namespace sdds {
 				}
 			}
 			if (!find) {
-				throw std::out_of_range("Job is not being handled by a unit");
+				throw std::out_of_range("Job is not being handled by a unit.");
 			}
 
 			return m_items[idx];
@@ -242,6 +237,11 @@ namespace sdds {
 			{
 				delete[] m_items;
 				m_items = nullptr;
+			}
+			if (m_jobs)
+			{
+				delete[] m_jobs;
+				m_jobs = nullptr;
 			}
 			m_size = src.m_size;
 			m_count = src.m_count;
@@ -324,23 +324,30 @@ namespace sdds {
 		{
 			if (m_count < 4)
 			{
+				
 				m_jobs[m_count] = new Job(name);
 				m_count++;
 			}
 			else
-			{
+			{			
 				throw 0;
 			}
 			return *this;
+
 		}
 
 		~CentralUnit()
 		{
-			if (m_items)
+		
+			for (size_t i = 0; i < m_size; i++)
 			{
-				delete[] m_items;
-				m_items = nullptr;
+				delete m_items[i];
 			}
+
+			delete[] m_items;
+			m_items = nullptr;
+			
+			
 		}
 
 	};

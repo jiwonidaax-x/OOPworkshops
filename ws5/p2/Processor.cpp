@@ -32,22 +32,22 @@ namespace sdds {
         
          if (m_current->is_complete())
          {    
-            //호출
+            
             if (m_fcnptr!=nullptr)
             {
             m_fcnptr(*m_host, this);
             }
-           
-          
+                    
             delete m_current;
             m_current = nullptr;
          }
       }
       catch (std::underflow_error& e)
       {
-         //여기도 호출
+      
          f_error(this);
-         free();
+         delete m_current;
+         m_current = nullptr;
 
       }
 

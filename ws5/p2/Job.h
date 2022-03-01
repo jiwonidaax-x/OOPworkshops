@@ -43,7 +43,7 @@ namespace sdds {
 		void operator()(size_t unit);
 
 		std::ostream& display(std::ostream& os)const;
-
+	
 		friend std::ostream& operator<<(std::ostream& os, const Job& src);
 	};
 
