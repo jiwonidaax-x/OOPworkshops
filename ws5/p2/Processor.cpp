@@ -29,36 +29,45 @@ namespace sdds {
       try
       {
          (*m_current)(m_power);
-         m_address;
+        
          if (m_current->is_complete())
-         {
+         {    
+            //호출
+            if (m_fcnptr!=nullptr)
+            {
+            m_fcnptr(*m_host, this);
+            }
+           
+          
             delete m_current;
             m_current = nullptr;
          }
       }
       catch (std::underflow_error& e)
       {
-         f_error;
+         //여기도 호출
+         f_error(this);
          free();
 
       }
 
    }
-   void Processor::on_complete(void (*address) (const CentralUnit<Processor>&, const Processor&))
+   
+   void Processor::on_complete(void (*fcnptr) ( CentralUnit<Processor>&,Processor*))
    {
-      m_address = address;
+     m_fcnptr = fcnptr;
    }
 
-   void Processor::on_error(std::function<void(Processor& src)> error)
+   void Processor::on_error(std::function<void(Processor* src)> error)
    {
       f_error = error;
    }
 
    Job* Processor::free()
    {
-
+      Job* temp = m_current;
       m_current = nullptr;
-      return m_current;
+      return temp;
    }
 
    std::ostream& operator<<(std::ostream& os, const Processor& src)

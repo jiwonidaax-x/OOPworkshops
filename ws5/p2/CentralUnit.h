@@ -31,7 +31,128 @@ namespace sdds {
 		size_t m_count = 0u;//job
 
 	public:
-		std::ostream& log = std::cout;
+		static std::ostream& log;
+
+		//////////////////////////////////////////////////////빡침포인트
+		CentralUnit(const char* name, const char* init)
+		{
+			m_type = name;
+
+			std::ifstream in;
+			in.open(init);
+
+			if (in.is_open() == false) {
+
+				throw std::invalid_argument("File cannot open.");
+			}
+			else
+			{
+				std::string temp{ "" };
+
+				do
+				{
+					m_size++;
+					std::getline(in, temp, '\n');
+
+				} while (!in.eof());
+
+
+				m_items = new T * [m_size];
+
+				in.clear();
+				in.seekg(std::ios::beg);
+
+				while (!in.eof())
+				{
+					size_t index{ 0u };
+					std::string brand;
+					std::string code;
+					int capacity;
+
+					std::getline(in, temp);
+
+					static int i = 0;
+					temp.erase(0, temp.find_first_not_of(" "));
+					index = temp.find("|");
+					brand = temp.substr(0, index);
+					brand.erase(brand.find_last_not_of(" ") + 1);
+					temp.erase(0, index + 1);
+
+					temp.erase(0, temp.find_first_not_of(" "));
+					index = temp.find("|");
+					code = temp.substr(0, index);
+					code.erase(code.find_last_not_of(" ") + 1);
+					temp.erase(0, index + 1);
+
+					temp.erase(0, temp.find_first_not_of(" ")); //remove beginning spaces
+					index = temp.find("\n");
+					try
+					{
+						capacity = std::stoi(temp.substr(0, index));
+					}
+					catch (...)
+					{
+						capacity = 1;
+					}
+
+					temp.erase(0, index + 1);
+
+					m_items[i] = new T(this, brand, code, capacity);
+
+
+					/*void (*m_cmpptr) (CentralUnit<Processor>&, Processor*)=complete_job;
+				
+					m_items[i]->on_complete(*m_cmpptr(*this, m_items[i]));*/
+					
+					 //1)void (*m_complete) (CentralUnit<T>&, T*) = complete_job(*this,m_items[i]);
+
+				    //2) m_items[i]->on_complete(this.complete_job(m_items[i],));
+					
+					 //m_items[i]->on_complete(complete_job);
+			     
+					 m_items[i]->on_complete(complete_job);
+					
+				
+               //
+					 auto lambda = [&](T* src)
+					 {
+
+							 log << "Failed to complete job" << src->get_current_job()->name();
+							 log<<this->get_available_units() << " units available";
+
+						 
+					 };
+
+					m_items[i]->on_error(lambda);
+
+					i++;
+				}
+
+				in.close();
+
+			}
+
+		}
+
+
+
+		static void complete_job(CentralUnit<T>& unit, T* src) {
+			for (size_t i = 0; i < unit.m_size; i++) {
+				if (unit.m_items[i] == src) {
+
+					log << "[COMPLETE] " << *(src->get_current_job()) << " " << *src
+						<< std::endl;
+			
+					src->free();
+					// delete unit[i];
+					// unit[i] = nullptr;
+
+					log<<unit.get_available_units() << " units available";
+				}
+			}
+		};
+
+	    
 		void display()
 		{
 
@@ -142,98 +263,6 @@ namespace sdds {
 
 		}//move assignment
 
-		void complete_job(CentralUnit<T>& unit, T* src)
-		{
-	
-			for (size_t i = 0; i < m_size; i++)
-			{
-				if (m_items[i] == unit)
-				{
-					m_items[i]->free();
-					log << "[COMPLETE] " << src->get_current_job() << " " << m_items[i];
-				}
-			}
-
-
-		}
-
-		CentralUnit(const char* name, const char* init)
-		{
-			m_type = name;
-
-			std::ifstream in;
-			in.open(init);
-
-			if (in.is_open() == false) {
-
-				throw std::invalid_argument("File cannot open.");
-			}
-			else
-			{
-				std::string temp{ "" };
-
-				do
-				{
-					m_size++;
-					std::getline(in, temp,'\n');		
-
-				} while (!in.eof());
-			
-
-				m_items = new T * [m_size];
-
-				in.clear();
-				in.seekg(std::ios::beg);
-
-				while (!in.eof())
-				{
-					size_t index{ 0u };
-					std::string brand;
-					std::string code;
-					int capacity;
-
-					std::getline(in, temp);
-
-					static int i = 0;
-					temp.erase(0, temp.find_first_not_of(" "));
-					index = temp.find("|");
-					brand = temp.substr(0, index);
-					brand.erase(brand.find_last_not_of(" ") + 1);
-					temp.erase(0, index + 1);
-
-					temp.erase(0, temp.find_first_not_of(" "));
-					index = temp.find("|");
-					code = temp.substr(0, index);
-					code.erase(code.find_last_not_of(" ") + 1);
-					temp.erase(0, index + 1);
-
-					temp.erase(0, temp.find_first_not_of(" ")); //remove beginning spaces
-					index = temp.find("\n");
-					try
-					{
-						capacity = std::stoi(temp.substr(0, index));
-					}
-					catch (...)
-					{
-						capacity = 1;
-					}
-
-					temp.erase(0, index + 1);
-
-					m_items[i] = new T(this, brand, code, capacity);
-					i++;
-					
-
-					//여기자리임 콜백
-
-
-				}
-				in.close();
-
-			}
-
-		}
-		
 		void run()
 		{					
 			for (size_t i = 0; i < m_size; i++)
@@ -318,6 +347,8 @@ namespace sdds {
 
 
 
+	template<typename T>
+	std::ostream& CentralUnit<T>::log = std::cout;
 }
 #endif // !SDDS_CENTRALUNIT_H_
 

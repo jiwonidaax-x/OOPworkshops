@@ -21,14 +21,20 @@
 		std::string m_code{ "" };
 		size_t m_power{ 0u };
 		Job* m_current{ nullptr };
-		void (*m_address) (const CentralUnit<Processor>&, const Processor&);
 
-		std::function<void(Processor&)>f_error;
+		/// ////////////////////
+		//function ptr
+		void (*m_fcnptr) (CentralUnit<Processor>&, Processor*) { nullptr };
+		/// ////////////////////
+	
 
+		std::function<void(Processor*)>f_error;
+	
 
 
 	public:
 		Processor() {}
+		void on_complete(void (*fcnptr) (CentralUnit<Processor>&, Processor*));
 		Processor(CentralUnit<Processor>* host, std::string brand, std::string code, size_t power);
 		void run();
 		explicit operator bool() const;
@@ -36,9 +42,11 @@
 		Job* get_current_job() const;
 		
 		void operator()();
-		void on_complete(void (*address) (const CentralUnit<Processor>&, const Processor&));
+
+		/////////////////////////////
+
 	
-		void on_error(std::function<void(Processor&)> error);
+		void on_error(std::function<void(Processor*)> error);
 		Job* free();
 		friend std::ostream& operator<<(std::ostream&, const Processor&);
 	};
