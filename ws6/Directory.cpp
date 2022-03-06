@@ -97,6 +97,7 @@ namespace sdds {
    {
       Resource* temp = nullptr;
       Directory* found = nullptr;
+      
       bool ok = false;
 
       std::string str1;
