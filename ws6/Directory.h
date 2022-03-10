@@ -26,8 +26,12 @@ namespace sdds {
 		std::string path() const;
 		size_t size() const;
 		NodeType type() const;
+		Directory(const Directory& src) = delete;
+		Directory(Directory&& src) = delete;
 		Directory& operator+=(Resource*);
 		Resource* find(const std::string&, const std::vector<OpFlags>& =std::vector<OpFlags> ());
+		void remove(const std::string&, const std::vector<OpFlags>& = std::vector<OpFlags>());
+		void display(std::ostream& os=std::cout, const std::vector<FormatFlags>& = std::vector<FormatFlags>()) const;
 	};
 
 

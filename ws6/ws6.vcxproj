@@ -141,13 +141,18 @@
   <ItemGroup>
     <ClInclude Include="Directory.h" />
     <ClInclude Include="File.h" />
+    <ClInclude Include="Filesystem.h" />
     <ClInclude Include="Flags.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Directory.cpp" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="Filesystem.cpp" />
     <ClCompile Include="w6_p2.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="filesystem.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

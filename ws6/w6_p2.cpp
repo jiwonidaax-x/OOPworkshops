@@ -2,7 +2,11 @@
 #include <iomanip>
 #include <exception>
 #include <string>
+#include <type_traits>
+#include <forward_list>
 
+#include "Filesystem.h"
+#include "Filesystem.h"
 #include "Directory.h"
 #include "Directory.h"
 #include "File.h"
@@ -21,12 +25,6 @@ void printHeader(std::string label) {
    printLine();
 }
 
-void printRInfo(int count, size_t bytes, std::string path) {
-   std::cout << std::left << std::setw(2) << (count >= 0 ? std::to_string(count) : "")
-      << std::right << std::setw(12) << std::to_string(bytes) + " bytes "
-      << std::left << path << std::right << std::endl;
-}
-
 // ws filesystem.txt
 int main(int argc, char** argv) {
    std::cout << "Command Line:\n";
@@ -36,73 +34,120 @@ int main(int argc, char** argv) {
    std::cout << "--------------------------\n\n";
 
    /*************************************************
-    * Creating a directory structure
+    * Creating the Filesystem
     **************************************************/
-   printHeader("DIRECTORY STRUCTURE");
 
-   sdds::Directory* root = new sdds::Directory("");
-   sdds::File* scene_img = new sdds::File("scene.jpg", "This is an image of a beautiful landscape.");
-   sdds::File* flag_img = new sdds::File("flag.jpg", "A Canadian flag.");
-   sdds::File* flag_img_test = new sdds::File("flag.jpg", "A Canadian flag.");
-   sdds::Directory* videos = new sdds::Directory("videos/");
-   sdds::File* harry_potter = new sdds::File("harry-potter.webm", "Compilation of the best moments from all 8 Harry Potter movies.");
-
-   *root += scene_img;
-   *root += flag_img;
-   *videos += harry_potter;
-   *root += videos;
+   printHeader("FILESYSTEM");
 
    try {
-      //flag_img_test랑 위에서 추가 시켜준 flag_img가 같아서 여기서는 catch로 넘어가야해
-      *root += flag_img_test;
+      sdds::Filesystem failedFs("non-existentfile");
    }
    catch (...) {
-      std::cout << "**EXPECTED EXCEPTION: flag.jpg image already exists in the root\n" << std::endl;
-      delete flag_img_test;
+      std::cout << "**EXPECTED EXCEPTION: Filesystem not created with invalid filename.\n" << std::endl;
    }
 
-   std::cout << "Directory structure created successfully" << std::endl;
+   if (std::is_copy_constructible<sdds::Filesystem>::value || std::is_copy_assignable<sdds::Filesystem>::value) {
+      std::cout << "**EXCEPTION: Filesystem should not support copy operations.\n" << std::endl;
+   }
 
-   printLine();
+   if ((!std::is_move_constructible<sdds::Filesystem>::value) || (!std::is_move_assignable<sdds::Filesystem>::value)) {
+      std::cout << "**EXCEPTION: Filesystem should support move operations.\n" << std::endl;
+   }
 
-   /*************************************************
-    * Directory & file information
-    **************************************************/
-   printHeader("RESOURCE INFO");
-   printRInfo(root->count(), root->size(), root->path());
-   printRInfo(scene_img->count(), scene_img->size(), scene_img->path());
-   printRInfo(flag_img->count(), flag_img->size(), flag_img->path());
-   printRInfo(videos->count(), videos->size(), videos->path());
-   printRInfo(harry_potter->count(), harry_potter->size(), harry_potter->path());
+   sdds::Filesystem fs(argv[1]);
 
-   printLine();
-
-   /*************************************************
-    * Finding a file in a directory
-    **************************************************/
-   printHeader("FIND");
+   std::vector<sdds::FormatFlags> fflags;
 
    std::vector<sdds::OpFlags> oflags;
-
-   if (!root->find(".flag.jpg")) {
-      std::cout << "**EXPECTED ERROR: File .flag.jpg not found in " << root->path() << "\n" << std::endl;
-   }
-
-   if (root->find("flag.jpg")) {
-      std::cout << "Found " << flag_img->name() << " in " << root->path() << " with the ALL flag\n" << std::endl;
-   }
-
-   if (!root->find("harry-potter.webm")) {
-      std::cout << "**EXPECTED ERROR: File harry-potter.webm not found in " << root->path() << " non-recursively\n" << std::endl;
-   }
-
    oflags.push_back(sdds::OpFlags::RECURSIVE);
-   if (root->find("harry-potter.webm", oflags)) {
-      std::cout << "Found " << harry_potter->name() << " in " << root->path() << " recursively\n"
-         << std::endl;
-   }
+
+   sdds::Directory* working_dir = fs.get_current_directory();
+   working_dir->display(std::cout);
 
    printLine();
 
-   delete root;
+   /*************************************************
+    * Changing directories
+    **************************************************/
+   printHeader("CHANGE DIR");
+
+   fflags.push_back(sdds::FormatFlags::LONG);
+
+   try {
+      working_dir = fs.change_directory("pics");
+   }
+   catch (std::invalid_argument&) {
+      std::cout << "**EXPECTED EXCEPTION: Couldn't change directory to invalid directory.\n" << std::endl;
+   }
+
+   working_dir = fs.change_directory("images/");
+   working_dir->display(std::cout, fflags);
+
+   printLine();
+
+   ///*************************************************
+   // * Finding a file in a directory
+   // **************************************************/
+   printHeader("FIND");
+
+   sdds::File* elephant_image = dynamic_cast<sdds::File*>(working_dir->find("elephant", oflags));
+   if (!elephant_image) {
+      std::cout << "**EXPECTED ERROR: File elephant not found in " << working_dir->path() << " recursively\n" << std::endl;
+   }
+
+   elephant_image = dynamic_cast<sdds::File*>(working_dir->find("elephant.png"));
+   if (!elephant_image) {
+      std::cout << "**EXPECTED ERROR: File elephant.png not found in " << working_dir->path() << " non-recursively\n" << std::endl;
+   }
+
+   elephant_image = dynamic_cast<sdds::File*>(working_dir->find("elephant.png", oflags));
+
+   std::cout << elephant_image->path() << " was found in fileystem" << std::endl;
+
+   printLine();
+
+
+   ///*************************************************
+   // * Adding a directory to another directory
+   // **************************************************/
+   printHeader("ADD TO DIRECTORY");
+   sdds::Directory* classified = new sdds::Directory("classified/");
+   *classified += new sdds::File(".aliens.txt", "Are aliens real? Go to Area 51 and find out!");
+   *classified += new sdds::File(".polls.txt", "Polling results for the current election are in here.");
+
+   std::cout << "Created directory " << classified->name() << std::endl;
+   classified->display(std::cout, fflags);
+
+   working_dir = fs.change_directory();
+   working_dir = fs.change_directory("documents/");
+   std::cout << "\nAdding " << classified->name() << " to " << working_dir->path() << std::endl;
+
+   *working_dir += classified;
+
+   working_dir->display(std::cout, fflags);
+
+   printLine();
+
+   ///*************************************************
+   // * Removing a directory
+   // **************************************************/
+   printHeader("REMOVE");
+
+   working_dir = fs.change_directory();
+   std::cout << "Current size of filesystem is " << working_dir->size() << " bytes\n";
+   std::cout << "Current size of documents/ is " << working_dir->find("documents/")->size() << " bytes\n\n";
+
+   try {
+      working_dir->remove("documents/");
+   }
+   catch (...) {
+      std::cout << "**EXPECTED EXCEPTION: Trying to remove a directory without passing the recursive flag.\n\n";
+   }
+
+   working_dir->remove("documents/", oflags);
+
+   std::cout << "After removing documents/\n";
+   working_dir->display(std::cout, fflags);
+
+   printLine();
 }
