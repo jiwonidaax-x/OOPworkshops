@@ -14,7 +14,27 @@
 #include <algorithm>
 #include<vector>
 namespace sdds {
+   Directory::~Directory()
+   {
+      for (size_t i = 0; i < m_contents.size(); i++)
+      {
+         delete m_contents[i];
+         m_contents[i] = nullptr;
+                 
+      }
+      std::vector<Resource*>::iterator iter;
+      for (iter = m_contents.begin(); iter != m_contents.end(); iter++) {
+         delete (*iter);
+      }
+      //m_contents.clear();
+      //std::vector<Resource*> vclear;
+      //m_contents.swap(vclear);
 
+      //vclear.clear();
+      //m_contents.clear();
+
+
+   }
    Directory::Directory(std::string name)
    {
       m_name = name;
@@ -41,7 +61,7 @@ namespace sdds {
       size_t temp = 0u;
       if (count())
       {
-         for (size_t i = 0; i < count(); i++)
+         for (int i = 0; i < count(); i++)
          {
             temp += m_contents[i]->size();
          }
@@ -62,8 +82,8 @@ namespace sdds {
    Directory& Directory::operator+=(Resource* contents)
    {
       bool ok = false;
-      static int i = 0;
-      int j = 0;
+      static size_t i = 0;
+      size_t j = 0;
 
       if (i == 0)
       {
@@ -103,12 +123,12 @@ namespace sdds {
 
       bool ok = false;
 
-      std::string str1;
+      std::string str1 = "";
 
-      int j = 0;
+      size_t j = 0;
       if (flag.size() > 0)
       {
-         for (size_t i = 0; i < count(); i++)
+         for (int i = 0; i < count(); i++)
          {
 
             if (m_contents[i]->type() == NodeType::DIR)
@@ -145,33 +165,35 @@ namespace sdds {
       std::vector<sdds::OpFlags> m_flags;
       m_flags.push_back(sdds::OpFlags::RECURSIVE);
       Resource* temp = nullptr;
-      int i=0;
-      int j=0;
-      if (temp=find(str))
+      int i = 0;
+      int j = 0;
+      temp = find(str);
+      if (temp == find(str))
       {
-         if (flag!=m_flags)
+         
+         if (flag != m_flags)
          {
-            throw std::invalid_argument(str+ " is a directory.Pass the recursive flag to delete directories.");
+            throw std::invalid_argument(str + " is a directory.Pass the recursive flag to delete directories.");
          }
          else
          {
-             while (t_flag==false)
+            while (t_flag == false)
             {
-                if (m_contents[i] == temp)
-                {
-                   t_flag = true;
-                } 
-              
-                i++;
-                j++;
+               if (m_contents[i] == temp)
+               {
+                  t_flag = true;
+               }
+
+               i++;
+               j++;
             }
-             j -= 1;
-             m_contents.erase(m_contents.begin() + j);
+            j -= 1;
+            m_contents.erase(m_contents.begin() + j);
          }
       }
       else
       {
-         throw std::string(str+" does not exist in DIRECTORY_NAME");
+         throw std::string(str + " does not exist in DIRECTORY_NAME");
       }
 
    }
@@ -197,7 +219,7 @@ namespace sdds {
             }
             os << " | ";
             os << std::setw(15) << std::left << m_contents[i]->name();
-            os << " | " << std::endl;
+            os << " |" << std::endl;
          }
 
 
@@ -221,7 +243,7 @@ namespace sdds {
             os << " | ";
             os << std::setw(15) << std::left << m_contents[i]->name();
             os << " | ";
-            if (m_contents[i]->count()>-1)
+            if (m_contents[i]->count() > -1)
             {
                os << std::setw(2) << std::right << m_contents[i]->count();
             }
@@ -229,10 +251,10 @@ namespace sdds {
             {
                os << "  ";
             }
-            
+
             os << " | ";
             os << std::setw(4) << std::right << m_contents[i]->size();
-            os << " bytes |" << std::endl;
+            os << " bytes | " << std::endl;
          }
 
       }

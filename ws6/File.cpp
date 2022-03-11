@@ -11,6 +11,7 @@
 #include<string>
 #include<iostream>
 namespace sdds {
+
    File::File(std::string name, std::string desc)
    {
       m_name = name;

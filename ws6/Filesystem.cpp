@@ -17,7 +17,9 @@ namespace sdds {
    {
       m_root = new Directory(dir);
       m_current = m_root;
-
+      //Directory* m_dir1=nullptr;
+      //Directory* m_dir2=nullptr;   
+      //File* m_file = nullptr;
       std::ifstream in;
       in.open(filename);
 
@@ -36,10 +38,12 @@ namespace sdds {
             std::string dir2;
             std::string fname;
             std::string desc;
-            Directory* m_dir1;
-            Directory* m_dir2;
-          
-            File* m_file;
+            Directory* m_dir1 = nullptr;
+            Directory* m_dir2 = nullptr;
+            File* m_file = nullptr;
+           
+
+         
             std::getline(in, temp);
             temp.erase(0, temp.find_first_not_of(" "));
             index = temp.find("/");
@@ -75,13 +79,15 @@ namespace sdds {
                }
             
    
- 
+        
             if (dir1.length() > 0)
             {
                if (!m_root->find(dir1))
                {
+                  
                   m_dir1 = new Directory(dir1);
                   *m_root += m_dir1;
+                 
                }
                else
                {
@@ -92,8 +98,10 @@ namespace sdds {
                {
                   if (!m_root->find(dir2))
                   {
+                     
                      m_dir2 = new Directory(dir2);
                      *m_dir1 += m_dir2;
+                     
                   }
                   else
                   {
@@ -105,6 +113,7 @@ namespace sdds {
                   {
                      if (!m_dir2->find(fname))
                      {
+                        
                         m_file = new File(fname, desc);
                         *m_dir2 += m_file;
                      }
@@ -122,6 +131,7 @@ namespace sdds {
 
                      if (!m_dir1->find(fname))
                      {
+                       
                         m_file = new File(fname, desc);
                      }
                      else
@@ -137,7 +147,9 @@ namespace sdds {
                if (fname.length() > 0)
                {
                   if (!m_root->find(fname))
+
                   {
+                     delete[] m_file;
                      m_file = new File(fname, desc);
                   }
                   else
@@ -148,11 +160,14 @@ namespace sdds {
                }
             }
 
+            
          }
+      
 
-         in.close();
 
       }
+      in.close();
+      
 
    }
 
@@ -203,7 +218,10 @@ namespace sdds {
    Filesystem::~Filesystem()
    {
 
-      //something
+      delete[] m_root;
+       m_root = nullptr;   
+       
+    
    }
 
 
