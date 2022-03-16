@@ -20,12 +20,12 @@ namespace sdds {
       {
          delete m_contents[i];
          m_contents[i] = nullptr;
-                 
+
       }
-      std::vector<Resource*>::iterator iter;
-      for (iter = m_contents.begin(); iter != m_contents.end(); iter++) {
-         delete (*iter);
-      }
+      //std::vector<Resource*>::iterator iter;
+      //for (iter = m_contents.begin(); iter != m_contents.end(); iter++) {
+      //   delete (*iter);
+      //}
       //m_contents.clear();
       //std::vector<Resource*> vclear;
       //m_contents.swap(vclear);
@@ -170,7 +170,7 @@ namespace sdds {
       temp = find(str);
       if (temp == find(str))
       {
-         
+
          if (flag != m_flags)
          {
             throw std::invalid_argument(str + " is a directory.Pass the recursive flag to delete directories.");
@@ -188,6 +188,7 @@ namespace sdds {
                j++;
             }
             j -= 1;
+            delete m_contents[j];
             m_contents.erase(m_contents.begin() + j);
          }
       }

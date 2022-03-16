@@ -24,7 +24,7 @@ namespace sdds {
       in.open(filename);
 
       if (in.is_open() == false) {
-
+         delete m_root;
          throw 0;
       }
       else
@@ -41,9 +41,9 @@ namespace sdds {
             Directory* m_dir1 = nullptr;
             Directory* m_dir2 = nullptr;
             File* m_file = nullptr;
-           
 
-         
+
+
             std::getline(in, temp);
             temp.erase(0, temp.find_first_not_of(" "));
             index = temp.find("/");
@@ -52,68 +52,68 @@ namespace sdds {
                dir1 = temp.substr(0, index + 1);
                temp.erase(0, index + 1);
             }
-           
-            if (temp.find("/")!=string::npos)
+
+            if (temp.find("/") != string::npos)
             {
                index = temp.find("/");
                dir2 = temp.substr(0, index + 1);
                temp.erase(0, index + 1);
             }
-         
-               
-               if (temp.find("|")!=string::npos)
-               {
-                  index = temp.find("|");
-                  fname = temp.substr(0, index);
-                  fname.erase(fname.find_last_not_of(" ") + 1);
-                  temp.erase(0, index + 1);
-               }
-               if (temp.length()>0)
-               {
 
-                  temp.erase(0, temp.find_first_not_of(" ")); 
-                  index = temp.find("\n");
-                  desc = temp.substr(0, index);
-                  desc.erase(desc.find_last_not_of(" ") + 1);
-                  temp.erase(0, index + 1);
-               }
-            
-   
-        
+
+            if (temp.find("|") != string::npos)
+            {
+               index = temp.find("|");
+               fname = temp.substr(0, index);
+               fname.erase(fname.find_last_not_of(" ") + 1);
+               temp.erase(0, index + 1);
+            }
+            if (temp.length() > 0)
+            {
+
+               temp.erase(0, temp.find_first_not_of(" "));
+               index = temp.find("\n");
+               desc = temp.substr(0, index);
+               desc.erase(desc.find_last_not_of(" ") + 1);
+               temp.erase(0, index + 1);
+            }
+
+
+
             if (dir1.length() > 0)
             {
                if (!m_root->find(dir1))
                {
-                  
+
                   m_dir1 = new Directory(dir1);
                   *m_root += m_dir1;
-                 
+
                }
                else
                {
-                  m_dir1 = dynamic_cast<sdds::Directory*>( m_root->find(dir1));
+                  m_dir1 = dynamic_cast<sdds::Directory*>(m_root->find(dir1));
                }
-               
+
                if (dir2.length() > 0)
                {
                   if (!m_root->find(dir2))
                   {
-                     
+
                      m_dir2 = new Directory(dir2);
                      *m_dir1 += m_dir2;
-                     
+
                   }
                   else
                   {
                      m_dir2 = dynamic_cast<sdds::Directory*>(m_dir1->find(dir2));
                   }
-                  
+
 
                   if (fname.length() > 0)
                   {
                      if (!m_dir2->find(fname))
                      {
-                        
+
                         m_file = new File(fname, desc);
                         *m_dir2 += m_file;
                      }
@@ -121,7 +121,7 @@ namespace sdds {
                      {
                         m_file = dynamic_cast<sdds::File*>(m_dir2->find(fname));
                      }
-                     
+
                   }
 
                }
@@ -131,7 +131,7 @@ namespace sdds {
 
                      if (!m_dir1->find(fname))
                      {
-                       
+
                         m_file = new File(fname, desc);
                      }
                      else
@@ -160,14 +160,14 @@ namespace sdds {
                }
             }
 
-            
+
          }
-      
+
 
 
       }
       in.close();
-      
+
 
    }
 
@@ -218,10 +218,10 @@ namespace sdds {
    Filesystem::~Filesystem()
    {
 
-      delete[] m_root;
-       m_root = nullptr;   
-       
-    
+      delete m_root;
+      m_root = nullptr;
+
+
    }
 
 

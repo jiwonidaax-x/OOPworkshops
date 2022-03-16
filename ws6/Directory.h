@@ -15,10 +15,11 @@
 namespace sdds {
 
 	class Directory :public Resource
-	{
+	{		
 		std::vector<Resource*> m_contents;
 
 	public:
+		
 		Directory(std::string name);
 		~Directory();
 		void update_parent_path(const std::string& path);

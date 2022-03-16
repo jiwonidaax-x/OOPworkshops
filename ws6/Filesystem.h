@@ -17,7 +17,7 @@ namespace sdds {
 	{
 		Directory* m_root = nullptr;
 		Directory* m_current = nullptr;
-
+		
 	public:
 		Filesystem(std::string filename,std::string dir="");
 		Filesystem(const Filesystem& src) = delete;

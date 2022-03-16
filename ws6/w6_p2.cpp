@@ -33,7 +33,7 @@ void printHeader(std::string label) {
 int main(int argc, char** argv) {
 
    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-  
+
    std::cout << "Command Line:\n";
    std::cout << "--------------------------\n";
    for (int i = 0; i < argc; i++)
@@ -72,90 +72,90 @@ int main(int argc, char** argv) {
    working_dir->display(std::cout);
 
    printLine();
-   _CrtDumpMemoryLeaks();
+
+   /*************************************************
+    * Changing directories
+    **************************************************/
+   printHeader("CHANGE DIR");
+
+   fflags.push_back(sdds::FormatFlags::LONG);
+
+   try {
+      working_dir = fs.change_directory("pics");
+   }
+   catch (std::invalid_argument&) {
+      std::cout << "**EXPECTED EXCEPTION: Couldn't change directory to invalid directory.\n" << std::endl;
+   }
+
+   working_dir = fs.change_directory("images/");
+   working_dir->display(std::cout, fflags);
+
+   printLine();
+
    ///*************************************************
-   // * Changing directories
+   // * Finding a file in a directory
    // **************************************************/
-   //printHeader("CHANGE DIR");
+   printHeader("FIND");
 
-   //fflags.push_back(sdds::FormatFlags::LONG);
+   sdds::File* elephant_image = dynamic_cast<sdds::File*>(working_dir->find("elephant", oflags));
+   if (!elephant_image) {
+      std::cout << "**EXPECTED ERROR: File elephant not found in " << working_dir->path() << " recursively\n" << std::endl;
+   }
 
-   //try {
-   //   working_dir = fs.change_directory("pics");
-   //}
-   //catch (std::invalid_argument&) {
-   //   std::cout << "**EXPECTED EXCEPTION: Couldn't change directory to invalid directory.\n" << std::endl;
-   //}
+   elephant_image = dynamic_cast<sdds::File*>(working_dir->find("elephant.png"));
+   if (!elephant_image) {
+      std::cout << "**EXPECTED ERROR: File elephant.png not found in " << working_dir->path() << " non-recursively\n" << std::endl;
+   }
 
-   //working_dir = fs.change_directory("images/");
-   //working_dir->display(std::cout, fflags);
+   elephant_image = dynamic_cast<sdds::File*>(working_dir->find("elephant.png", oflags));
 
-   //printLine();
+   std::cout << elephant_image->path() << " was found in fileystem" << std::endl;
 
-   /////*************************************************
-   //// * Finding a file in a directory
-   //// **************************************************/
-   //printHeader("FIND");
-
-   //sdds::File* elephant_image = dynamic_cast<sdds::File*>(working_dir->find("elephant", oflags));
-   //if (!elephant_image) {
-   //   std::cout << "**EXPECTED ERROR: File elephant not found in " << working_dir->path() << " recursively\n" << std::endl;
-   //}
-
-   //elephant_image = dynamic_cast<sdds::File*>(working_dir->find("elephant.png"));
-   //if (!elephant_image) {
-   //   std::cout << "**EXPECTED ERROR: File elephant.png not found in " << working_dir->path() << " non-recursively\n" << std::endl;
-   //}
-
-   //elephant_image = dynamic_cast<sdds::File*>(working_dir->find("elephant.png", oflags));
-
-   //std::cout << elephant_image->path() << " was found in fileystem" << std::endl;
-
-   //printLine();
+   printLine();
 
 
-   /////*************************************************
-   //// * Adding a directory to another directory
-   //// **************************************************/
-   //printHeader("ADD TO DIRECTORY");
-   //sdds::Directory* classified = new sdds::Directory("classified/");
-   //*classified += new sdds::File(".aliens.txt", "Are aliens real? Go to Area 51 and find out!");
-   //*classified += new sdds::File(".polls.txt", "Polling results for the current election are in here.");
+   ///*************************************************
+   // * Adding a directory to another directory
+   // **************************************************/
+   printHeader("ADD TO DIRECTORY");
+   sdds::Directory* classified = new sdds::Directory("classified/");
+   *classified += new sdds::File(".aliens.txt", "Are aliens real? Go to Area 51 and find out!");
+   *classified += new sdds::File(".polls.txt", "Polling results for the current election are in here.");
 
-   //std::cout << "Created directory " << classified->name() << std::endl;
-   //classified->display(std::cout, fflags);
+   std::cout << "Created directory " << classified->name() << std::endl;
+   classified->display(std::cout, fflags);
 
-   //working_dir = fs.change_directory();
-   //working_dir = fs.change_directory("documents/");
-   //std::cout << "\nAdding " << classified->name() << " to " << working_dir->path() << std::endl;
+   working_dir = fs.change_directory();
+   working_dir = fs.change_directory("documents/");
+   std::cout << "\nAdding " << classified->name() << " to " << working_dir->path() << std::endl;
 
-   //*working_dir += classified;
+   *working_dir += classified;
 
-   //working_dir->display(std::cout, fflags);
+   working_dir->display(std::cout, fflags);
 
-   //printLine();
+   printLine();
 
-   /////*************************************************
-   //// * Removing a directory
-   //// **************************************************/
-   //printHeader("REMOVE");
+   ///*************************************************
+   // * Removing a directory
+   // **************************************************/
+   printHeader("REMOVE");
 
-   //working_dir = fs.change_directory();
-   //std::cout << "Current size of filesystem is " << working_dir->size() << " bytes\n";
-   //std::cout << "Current size of documents/ is " << working_dir->find("documents/")->size() << " bytes\n\n";
+   working_dir = fs.change_directory();
+   std::cout << "Current size of filesystem is " << working_dir->size() << " bytes\n";
+   std::cout << "Current size of documents/ is " << working_dir->find("documents/")->size() << " bytes\n\n";
 
-   //try {
-   //   working_dir->remove("documents/");
-   //}
-   //catch (...) {
-   //   std::cout << "**EXPECTED EXCEPTION: Trying to remove a directory without passing the recursive flag.\n\n";
-   //}
+   try {
+      working_dir->remove("documents/");
+   }
+   catch (...) {
+      std::cout << "**EXPECTED EXCEPTION: Trying to remove a directory without passing the recursive flag.\n\n";
+   }
 
-   //working_dir->remove("documents/", oflags);
+   working_dir->remove("documents/", oflags);
 
-   //std::cout << "After removing documents/\n";
-   //working_dir->display(std::cout, fflags);
+   std::cout << "After removing documents/\n";
+   working_dir->display(std::cout, fflags);
 
-   //printLine();
+   printLine();
    
 }
