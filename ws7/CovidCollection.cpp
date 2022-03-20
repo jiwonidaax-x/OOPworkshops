@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <cstring>
 #include <algorithm>
 using namespace std;
 namespace sdds {
@@ -71,25 +72,26 @@ namespace sdds {
 
       void CovidCollection::sort(const char* src)
       {
-         if (src=="country")
+         
+         if (strcmp(src, "country") == 0)
          {
             std::sort(m_covid.begin(), m_covid.end(), [](Covid& covid1, Covid& covid2) {
                return covid1.m_country < covid2.m_country;
                });
          }
-         else if (src == "variant")
+         else if (strcmp(src, "variant") == 0)
          {
             std::sort(m_covid.begin(), m_covid.end(), [](Covid& covid1, Covid& covid2) {
                return covid1.m_variant< covid2.m_variant;
                });
          }
-         else if (src == "cases")
+         else if (strcmp(src, "cases") == 0)
          {
             std::sort(m_covid.begin(), m_covid.end(), [](Covid& covid1, Covid& covid2) {
                return covid1.m_numOfcase < covid2.m_numOfcase;
                });
          }
-         else if (src == "deaths")
+         else if (strcmp(src, "deaths") == 0)
          {
             std::sort(m_covid.begin(), m_covid.end(), [](Covid& covid1, Covid& covid2) {
                return covid1.m_deaths< covid2.m_deaths;
@@ -149,7 +151,7 @@ namespace sdds {
 
       std::ostream& operator<<(std::ostream& out, const Covid& theCovid)
       {
-         out << "| " << left << setw(20) << setfill(' ') << theCovid.m_country;
+         out << " | " << left << setw(20) << setfill(' ') << theCovid.m_country;
          out << " | " << setw(15) << setfill(' ') << theCovid.m_city;
          out << " | " << setw(20) << setfill(' ') << theCovid.m_variant;
         if (theCovid.m_year < 0)
@@ -160,7 +162,7 @@ namespace sdds {
         {
            out << " | " << right << setw(6) << theCovid.m_year;
         }
-         out << " | " << right << setw(5) << theCovid.m_numOfcase;
+         out << " | " << right << setw(4) << theCovid.m_numOfcase;
          out << " | " << setw(3) << theCovid.m_deaths << " |";
 
          return out;
